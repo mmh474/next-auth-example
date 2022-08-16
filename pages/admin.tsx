@@ -1,9 +1,14 @@
-import Layout from "../components/layout"
+import { unstable_getServerSession } from "next-auth/next";
+import { GetServerSidePropsContext } from "next/types";
+import Layout from "../components/layout";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function Page() {
   return (
     <Layout>
-      <h1>This page is protected by Middleware</h1>
+      <h1>
+        This page is protected by Server Side, using unstable_getServerSession
+      </h1>
       <p>Only admin users can see this page.</p>
       <p>
         To learn more about the NextAuth middleware see&nbsp;
@@ -13,5 +18,28 @@ export default function Page() {
         .
       </p>
     </Layout>
-  )
+  );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
 }
