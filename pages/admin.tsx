@@ -1,5 +1,5 @@
 import { unstable_getServerSession } from "next-auth/next";
-import { GetServerSidePropsContext } from "next/types";
+import { GetServerSideProps } from "next/types";
 import Layout from "../components/layout";
 import { authOptions } from "./api/auth/[...nextauth]";
 
@@ -21,7 +21,7 @@ export default function Page() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
@@ -42,4 +42,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       session,
     },
   };
-}
+};
